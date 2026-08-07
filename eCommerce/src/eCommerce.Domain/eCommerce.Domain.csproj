@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The Domain layer is deliberately dependency-free: no packages, no project
+       references. Everything it needs comes from the BCL. -->
+
+</Project>

@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(dotnet build eCommerce/src/eCommerce.Domain/eCommerce.Domain.csproj --nologo -v q 2>&1)",
+      "PowerShell(dotnet build eCommerce/src/eCommerce.Application/eCommerce.Application.csproj --nologo -v q 2>&1)",
+      "PowerShell(dotnet build eCommerce/src/eCommerce.Infrastructure/eCommerce.Infrastructure.csproj --nologo -v q 2>&1)",
+      "PowerShell(dotnet build eCommerce/eCommerce.slnx --nologo -v q 2>&1)",
+      "PowerShell(dotnet tool install dotnet-ef --tool-manifest \"C:\\\\Repos\\\\Internal\\\\eCommerce\\\\Backend\\\\ecommerce-dotnet\\\\eCommerce\\\\.config\\\\dotnet-tools.json\" 2>&1)",
+      "PowerShell('--- .config dirs ---')",
+      "PowerShell(New-Item -ItemType Directory -Force -Path eCommerce/.config)",
+      "PowerShell(Move-Item -Force eCommerce/dotnet-tools.json eCommerce/.config/dotnet-tools.json)",
+      "PowerShell(dotnet tool install dotnet-ef --tool-manifest eCommerce/.config/dotnet-tools.json 2>&1)",
+      "Read(//c/Repos/Internal/eCommerce/Backend/ecommerce-dotnet/eCommerce/src/eCommerce.Infrastructure/Persistence/Migrations/**)",
+      "PowerShell(dotnet test eCommerce/eCommerce.slnx --nologo 2>&1)",
+      "PowerShell(sqllocaldb start MSSQLLocalDB 2>&1)",
+      "Bash(curl -s \"http://localhost:5160/api/products?page=1&pageSize=3\")",
+      "Bash(python -m json.tool)",
+      "PowerShell(Get-Content \"$env:TEMP\\\\api-out.log\" | Select-String -Pattern 'Unhandled|Exception|error:|fail:' -Context 0,12 | Select-Object -Last 40)",
+      "PowerShell(Get-Process -Name 'eCommerce.Api' -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force -ErrorAction SilentlyContinue)",
+      "PowerShell('--- slnx ---')",
+      "PowerShell(dotnet build eCommerce/tests/eCommerce.Infrastructure.IntegrationTests/eCommerce.Infrastructure.IntegrationTests.csproj --nologo -v q 2>&1)",
+      "PowerShell(dotnet test eCommerce/tests/eCommerce.Infrastructure.IntegrationTests/eCommerce.Infrastructure.IntegrationTests.csproj --nologo 2>&1)",
+      "PowerShell(Get-ChildItem -Force -Recurse .claude -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName.Replace\\(\\(Get-Location\\).Path + '\\\\', ''\\) })",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5160/openapi/v1.json)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5160/swagger)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5160/swagger/index.html)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5160/scalar/v1)",
+      "Bash(curl -s http://localhost:5160/openapi/v1.json)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(f'{m.upper\\(\\):7} {p}'\\) for p,ops in d['paths'].items\\(\\) for m in ops]\")",
+      "PowerShell('API stopped')"
+    ]
+  }
+}

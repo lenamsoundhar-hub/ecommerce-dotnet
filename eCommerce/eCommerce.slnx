@@ -1,3 +1,13 @@
 <Solution>
-  <Project Path="eCommerce/eCommerce.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/eCommerce.Api/eCommerce.Api.csproj" />
+    <Project Path="src/eCommerce.Application/eCommerce.Application.csproj" />
+    <Project Path="src/eCommerce.Domain/eCommerce.Domain.csproj" />
+    <Project Path="src/eCommerce.Infrastructure/eCommerce.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/eCommerce.Application.UnitTests/eCommerce.Application.UnitTests.csproj" />
+    <Project Path="tests/eCommerce.Domain.UnitTests/eCommerce.Domain.UnitTests.csproj" />
+    <Project Path="tests/eCommerce.Infrastructure.IntegrationTests/eCommerce.Infrastructure.IntegrationTests.csproj" />
+  </Folder>
 </Solution>

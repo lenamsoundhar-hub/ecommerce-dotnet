@@ -1,0 +1,73 @@
+@eCommerce.Api_HostAddress = http://localhost:5160
+
+### List products (paged)
+GET {{eCommerce.Api_HostAddress}}/api/products?page=1&pageSize=20
+Accept: application/json
+
+### Search products by name
+GET {{eCommerce.Api_HostAddress}}/api/products?searchTerm=desk&activeOnly=true
+Accept: application/json
+
+### Create a product
+# @name createProduct
+POST {{eCommerce.Api_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Monitor Arm",
+  "description": "Gas-spring single monitor arm, VESA 75/100.",
+  "sku": "ARM-MON-01",
+  "price": 89.99,
+  "currency": "USD",
+  "stockQuantity": 25
+}
+
+### Get a product by id
+GET {{eCommerce.Api_HostAddress}}/api/products/{{createProduct.response.body.$}}
+Accept: application/json
+
+### Update the price
+PUT {{eCommerce.Api_HostAddress}}/api/products/{{createProduct.response.body.$}}/price
+Content-Type: application/json
+
+{
+  "price": 79.99,
+  "currency": "USD"
+}
+
+### Restock
+POST {{eCommerce.Api_HostAddress}}/api/products/{{createProduct.response.body.$}}/restock
+Content-Type: application/json
+
+{
+  "quantity": 10
+}
+
+### Deactivate
+DELETE {{eCommerce.Api_HostAddress}}/api/products/{{createProduct.response.body.$}}
+
+### Rejected: duplicate SKU returns 409
+POST {{eCommerce.Api_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Duplicate",
+  "description": "Reuses an existing SKU.",
+  "sku": "ARM-MON-01",
+  "price": 10.00,
+  "currency": "USD",
+  "stockQuantity": 1
+}
+
+### Rejected: validation failure returns 400
+POST {{eCommerce.Api_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "",
+  "description": "Blank name and a bad currency code.",
+  "sku": "BAD SKU!",
+  "price": -5,
+  "currency": "DOLLAR",
+  "stockQuantity": -1
+}
