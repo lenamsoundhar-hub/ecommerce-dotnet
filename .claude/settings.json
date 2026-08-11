@@ -28,7 +28,8 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5160/scalar/v1)",
       "Bash(curl -s http://localhost:5160/openapi/v1.json)",
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(f'{m.upper\\(\\):7} {p}'\\) for p,ops in d['paths'].items\\(\\) for m in ops]\")",
-      "PowerShell('API stopped')"
+      "PowerShell('API stopped')",
+      "PowerShell(dotnet test eCommerce/tests/eCommerce.Application.UnitTests/eCommerce.Application.UnitTests.csproj --nologo 2>&1)"
     ]
   }
 }
