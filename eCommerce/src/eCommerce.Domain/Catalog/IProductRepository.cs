@@ -24,5 +24,8 @@ public interface IProductRepository
 
     void Add(Product product);
 
-    void Remove(Product product);
+    // There is deliberately no Remove. Retiring a product is a soft delete via
+    // Product.Deactivate(), so that order history keeps referring to a row that
+    // still exists. Add a purpose-named method here if a hard delete is ever
+    // genuinely required (e.g. erasure requests).
 }

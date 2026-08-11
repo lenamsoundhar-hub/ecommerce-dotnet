@@ -55,8 +55,6 @@ public sealed class ProductRepository : IProductRepository
 
     public void Add(Product product) => _context.Products.Add(product);
 
-    public void Remove(Product product) => _context.Products.Remove(product);
-
     /// <summary>
     /// Compares against the <see cref="Sku"/> itself so EF applies the value
     /// converter to the parameter. Comparing to <c>sku.Value</c> instead makes

@@ -215,7 +215,7 @@ public class ProductRepositoryTests : IAsyncLifetime
     // --- Writes ------------------------------------------------------------
 
     [Fact]
-    public async Task AddAndRemove_PersistThroughTheUnitOfWork()
+    public async Task Add_PersistsThroughTheUnitOfWork()
     {
         var product = AProduct();
 
@@ -226,17 +226,36 @@ public class ProductRepositoryTests : IAsyncLifetime
             await writeContext.SaveChangesAsync();
         }
 
-        var (deleteContext, deleteRepository) = NewRepository();
-        await using (deleteContext)
+        var (readContext, readRepository) = NewRepository();
+        await using var _ = readContext;
+
+        (await readRepository.GetByIdAsync(product.Id)).Should().NotBeNull();
+    }
+
+    /// <summary>
+    /// Retiring a product is a soft delete: the row survives so that anything
+    /// referencing it still resolves. The repository exposes no hard delete.
+    /// </summary>
+    [Fact]
+    public async Task DeactivatingKeepsTheRowAndOnlyFlipsTheFlag()
+    {
+        var product = AProduct();
+        await SeedAsync(product);
+
+        var (updateContext, updateRepository) = NewRepository();
+        await using (updateContext)
         {
-            var loaded = await deleteRepository.GetByIdAsync(product.Id);
-            deleteRepository.Remove(loaded!);
-            await deleteContext.SaveChangesAsync();
+            var loaded = await updateRepository.GetByIdAsync(product.Id);
+            loaded!.Deactivate();
+            await updateContext.SaveChangesAsync();
         }
 
         var (readContext, readRepository) = NewRepository();
         await using var _ = readContext;
 
-        (await readRepository.GetByIdAsync(product.Id)).Should().BeNull();
+        var stillThere = await readRepository.GetByIdAsync(product.Id);
+
+        stillThere.Should().NotBeNull();
+        stillThere!.IsActive.Should().BeFalse();
     }
 }
