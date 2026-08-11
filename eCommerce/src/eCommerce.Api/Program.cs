@@ -11,6 +11,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddFrontendCors(builder.Configuration);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -29,6 +30,10 @@ if (app.Environment.IsDevelopment())
     await initialiser.MigrateAsync();
     await initialiser.SeedAsync();
 }
+
+// Ahead of HTTPS redirection: a redirected preflight loses its CORS headers and
+// browsers do not follow redirects on OPTIONS, so the request would just fail.
+app.UseCors(CorsExtensions.PolicyName);
 
 app.UseHttpsRedirection();
 

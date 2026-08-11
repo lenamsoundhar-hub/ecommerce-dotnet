@@ -55,6 +55,32 @@ Domain events recorded by an aggregate are published by `ApplicationDbContext` *
 `SaveChangesAsync` succeeds, so a handler never reacts to a transaction that was later
 rolled back.
 
+## CORS
+
+The SPA front end is allowed in by the `Frontend` policy, wired up in
+`Api/Infrastructure/CorsExtensions.cs`. Origins are configuration, not code:
+
+```json
+"Cors": {
+  "AllowedOrigins": [ "http://localhost:5173" ]
+}
+```
+
+Development already lists Vite's dev server on port 5173 (both schemes, plus
+`127.0.0.1`, since an origin must match exactly — `localhost` and `127.0.0.1` are
+different origins to a browser). `appsettings.json` ships an **empty** list, so every
+other environment has to name its front end deliberately; an empty list allows no
+cross-origin requests rather than defaulting to allowing all.
+
+Two deliberate details:
+
+- `UseCors` runs **before** `UseHttpsRedirection`. A redirected preflight loses its
+  CORS headers, and browsers do not follow redirects on `OPTIONS`, so the request
+  would fail with a confusing "no Access-Control-Allow-Origin" error.
+- The policy does **not** call `AllowCredentials`. Add it only if the front end needs
+  to send cookies; bearer tokens in an `Authorization` header work without it. Note
+  that `AllowCredentials` cannot be combined with a wildcard origin.
+
 ## Error handling
 
 Exceptions map to RFC 9457 problem responses in `GlobalExceptionHandler`:
