@@ -103,10 +103,24 @@ dotnet run --project eCommerce/src/eCommerce.Api
 ```
 
 In Development the app applies migrations and seeds a few sample products on start-up.
-The connection string defaults to LocalDB and lives in
-`src/eCommerce.Api/appsettings.Development.json`. `appsettings.json` ships an empty
-`DefaultConnection` — supply the real one per environment via user secrets or
-environment variables, and do not commit it.
+
+**The connection string is not in the repository.** No `appsettings*.json` file carries
+one, by design — supply it from user secrets, which are stored in your user profile and
+override the JSON files:
+
+```powershell
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" `
+  "Server=(localdb)\mssqllocaldb;Database=eCommerce;Trusted_Connection=True;TrustServerCertificate=True" `
+  --project eCommerce/src/eCommerce.Api
+```
+
+For non-development environments use environment variables or your secret store:
+`ConnectionStrings__DefaultConnection=...`.
+
+Never commit a connection string containing credentials. Note that
+`Trusted_Connection=True` selects Windows authentication and causes any `User Id` and
+`Password` in the same string to be **ignored** — if you need SQL authentication, drop
+`Trusted_Connection` entirely.
 
 `src/eCommerce.Api/eCommerce.Api.http` exercises every endpoint, including the 400 and
 409 paths.
